@@ -1,99 +1,79 @@
 import { useEffect, useState } from 'react'
-import { useReveal, useCountUp } from '../hooks/useReveal'
+import { useCountUp } from '../hooks/useReveal'
 import styles from './Hero.module.css'
 
 const START_DATE = new Date('2023-10-07')
 const TODAY = new Date('2026-03-15')
 const DAYS = Math.floor((TODAY - START_DATE) / (1000 * 60 * 60 * 24))
 
-function AnimatedNumber({ value, suffix = '', prefix = '' }) {
-  const [ref, visible] = useReveal(0.1)
-  const count = useCountUp(value, 2200, visible)
-  return (
-    <span ref={ref}>
-      {prefix}{count.toLocaleString()}{suffix}
-    </span>
-  )
+function Counter({ target, suffix = '' }) {
+  const [ref, setRef] = useState(null)
+  const [started, setStarted] = useState(false)
+  const count = useCountUp(target, 2400, started)
+  useEffect(() => {
+    if (!ref) return
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setStarted(true) }, { threshold: 0.1 })
+    obs.observe(ref)
+    return () => obs.disconnect()
+  }, [ref])
+  return <span ref={setRef}>{count.toLocaleString()}{suffix}</span>
 }
 
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0)
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const fn = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
   }, [])
-
-  const parallax = scrollY * 0.4
 
   return (
     <section className={styles.hero}>
-      <div className={styles.bgNumber} style={{ transform: `translateY(${parallax}px)` }}>
-        73,188
-      </div>
-
-      {/* Torn paper / grain overlay */}
-      <div className={styles.grain} />
-
+      <div className={styles.photoBg} style={{
+        backgroundImage: `url(https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/An_aerial_view_of_heavily_damaged_collapsed_buildings_caused_by_Israeli_airstrikes_in_Al-Zahra%2C_near_Gaza_city.jpg/1280px-An_aerial_view_of_heavily_damaged_collapsed_buildings_caused_by_Israeli_airstrikes_in_Al-Zahra%2C_near_Gaza_city.jpg)`,
+        transform: `translateY(${scrollY * 0.3}px)`,
+      }} />
+      <div className={styles.overlay} />
       <div className={styles.content}>
-        <div className={styles.label}>Research data — March 2026</div>
-        <h1 className={styles.title}>
-          Gaza —<br />
-          <em>The Numbers</em><br />
-          Behind the War
-        </h1>
-        <p className={styles.sub}>
-          A data-driven record of the ongoing conflict in Gaza Strip, drawing on primary
-          research, UN reports, and the latest figures as of March 15, 2026.
-        </p>
-
-        <div className={styles.metaGrid}>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Confirmed killed</span>
-            <span className={styles.metaValue}>
-              <AnimatedNumber value={73188} suffix="+" />
-            </span>
+        <div className={styles.eyebrow}>Data record — March 15, 2026</div>
+        <h1 className={styles.title}>Gaza<br /><em>The Numbers</em></h1>
+        <p className={styles.sub}>A data-driven record of the ongoing conflict — casualties, destruction, urban planning research, and the Sarajevo comparison.</p>
+        <div className={styles.counters}>
+          <div className={styles.counterItem}>
+            <div className={styles.counterValue}><Counter target={73188} suffix="+" /></div>
+            <div className={styles.counterLabel}>Confirmed killed</div>
           </div>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Displaced</span>
-            <span className={styles.metaValue}>
-              <AnimatedNumber value={1900000} />
-            </span>
+          <div className={styles.counterDivider} />
+          <div className={styles.counterItem}>
+            <div className={styles.counterValue}><Counter target={1900000} /></div>
+            <div className={styles.counterLabel}>Displaced</div>
           </div>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Days of conflict</span>
-            <span className={styles.metaValue}>
-              <AnimatedNumber value={DAYS} />
-            </span>
+          <div className={styles.counterDivider} />
+          <div className={styles.counterItem}>
+            <div className={styles.counterValue}><Counter target={DAYS} /></div>
+            <div className={styles.counterLabel}>Days of conflict</div>
           </div>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Children killed</span>
-            <span className={styles.metaValue}>
-              <AnimatedNumber value={20000} suffix="+" />
-            </span>
+          <div className={styles.counterDivider} />
+          <div className={styles.counterItem}>
+            <div className={styles.counterValue}><Counter target={20000} suffix="+" /></div>
+            <div className={styles.counterLabel}>Children killed</div>
           </div>
         </div>
+        <div className={styles.navPills}>
+          {[['#casualties','01 Casualties'],['#destruction','02 Destruction'],['#history','03 History'],['#survey','04 Survey'],['#sarajevo','05 Sarajevo']].map(([href, label]) => (
+            <a key={href} href={href} className={styles.pill}>{label}</a>
+          ))}
+        </div>
       </div>
-
+      <div className={styles.photoCredit}>Photo: Aerial view of Al-Zahra near Gaza City — Wikimedia Commons / CC BY-SA 4.0</div>
       <div className={styles.scrollHint}>
-        <span>Scroll to explore</span>
-        <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
-          <rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" strokeWidth="1" />
-          <circle cx="8" cy="7" r="2" fill="currentColor">
-            <animate attributeName="cy" values="7;15;7" dur="2s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+        <svg width="20" height="30" viewBox="0 0 20 30">
+          <rect x="1" y="1" width="18" height="28" rx="9" stroke="rgba(255,255,255,0.4)" strokeWidth="1" fill="none"/>
+          <circle cx="10" cy="8" r="2.5" fill="rgba(255,255,255,0.7)">
+            <animate attributeName="cy" values="8;18;8" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
           </circle>
         </svg>
-      </div>
-
-      {/* Quick nav pills */}
-      <div className={styles.quickNav}>
-        {['#casualties','#destruction','#history','#survey','#sarajevo'].map((href, i) => (
-          <a key={href} href={href} className={styles.pill}
-            style={{ animationDelay: `${1 + i * 0.1}s` }}>
-            {['01 Casualties','02 Destruction','03 History','04 Survey','05 Sarajevo'][i]}
-          </a>
-        ))}
       </div>
     </section>
   )

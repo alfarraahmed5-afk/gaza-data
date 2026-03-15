@@ -1,0 +1,100 @@
+/* Photo grid */
+.photoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 2rem 0;
+}
+.photoItem {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+.photo {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease, filter 0.4s ease;
+  filter: grayscale(20%);
+}
+.photoItem:hover .photo {
+  transform: scale(1.03);
+  filter: grayscale(0%);
+}
+.figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.03);
+  border-top: 1px solid var(--faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.credit {
+  white-space: nowrap;
+  opacity: 0.6;
+}
+
+/* Single photo full-width */
+.photoSingle {
+  margin: 2rem 0;
+  overflow: hidden;
+}
+.photoSingle .photo {
+  height: 380px;
+  filter: grayscale(15%);
+}
+
+/* Video */
+.videoWrap { margin: 2rem 0; }
+.videoLabel {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.videoFrame {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid var(--faint);
+}
+.videoFrame iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+
+/* Photo strip — horizontal scroll */
+.photoStrip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin: 2rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--faint) transparent;
+}
+.photoStrip .photoItem {
+  flex-shrink: 0;
+  width: 320px;
+}
+.photoStrip .photo {
+  height: 200px;
+}
+
+@media (max-width: 640px) {
+  .photoGrid { grid-template-columns: 1fr; }
+  .photoSingle .photo { height: 220px; }
+}

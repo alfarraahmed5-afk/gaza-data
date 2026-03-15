@@ -135,9 +135,9 @@ export default function Sarajevo() {
       <Rule />
 
       <VideoEmbed
-        src="https://www.youtube.com/embed/bJR8QV0FQxY"
-        title="Sarajevo — from siege to recovery"
-        caption="Sarajevo's recovery after the 1992–1995 siege. Source: DW Documentary."
+        src="https://www.youtube.com/embed/NfJbFjQ8xXk"
+        title="Sarajevo siege and recovery — DW Documentary"
+        caption="Sarajevo: The 1992–1995 siege and the city's recovery — DW Documentary. Essential context for the Gaza comparison."
       />
 
       <Rule />
